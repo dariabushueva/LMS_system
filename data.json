@@ -1,0 +1,38 @@
+[
+  {
+    "model": "lms.payment",
+    "pk": 1,
+    "fields": {
+      "user": 1,
+      "date": "2009-10-01",
+      "amount": 2300,
+      "method": "cash",
+      "course": null,
+      "lesson": 4
+    }
+  },
+  {
+    "model": "lms.payment",
+    "pk": 2,
+    "fields": {
+      "user": 1,
+      "date": "2019-10-01",
+      "amount": 5700,
+      "method": "cash",
+      "course": null,
+      "lesson": 3
+    }
+  },
+  {
+    "model": "lms.payment",
+    "pk": 3,
+    "fields": {
+      "user": 1,
+      "date": "2022-10-01",
+      "amount": 99000,
+      "method": "transfer",
+      "course": 3,
+      "lesson": null
+    }
+  }
+]

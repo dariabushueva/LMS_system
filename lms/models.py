@@ -10,7 +10,7 @@ class Course(models.Model):
     description = models.TextField(**NULLABLE, verbose_name='Описание')
     image_preview = models.ImageField(upload_to='media/', **NULLABLE, verbose_name='Превью')
 
-    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, **NULLABLE, verbose_name='Владелец')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, **NULLABLE, verbose_name='Автор')
 
     def __str__(self):
         return f'{self.title}'
@@ -27,6 +27,8 @@ class Lesson(models.Model):
     image_preview = models.ImageField(upload_to='media/', **NULLABLE, verbose_name='Превью')
     video_url = models.URLField(**NULLABLE, verbose_name='Ссылка на видео')
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс')
+
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, **NULLABLE, verbose_name='Автор')
 
     def __str__(self):
         return f'{self.title}'

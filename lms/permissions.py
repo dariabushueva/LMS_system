@@ -15,3 +15,8 @@ class IsAuthor(BasePermission):
         return request.user == view.get_object().author
 
 
+class IsSubscriber(BasePermission):
+
+    def has_permission(self, request, view):
+        return request.user == view.get_object().subscriber
+

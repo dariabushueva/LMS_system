@@ -3,9 +3,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 
-from lms.models import Course, Lesson, Payment
-from lms.permissions import IsModeratorOrIsAuthor, IsAuthor
-from lms.serializers import CourseSerializer, LessonSerializer, PaymentSerializer
+from lms.models import Course, Lesson, Payment, Subscription
+from lms.permissions import IsModeratorOrIsAuthor, IsAuthor, IsSubscriber
+from lms.serializers import CourseSerializer, LessonSerializer, PaymentSerializer, SubscriptionSerializer
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -59,6 +59,23 @@ class LessonUpdateAPIView(generics.UpdateAPIView):
 class LessonDestroyAPIView(generics.DestroyAPIView):
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthor]
+
+
+class SubscriptionViewSet(viewsets.ModelViewSet):
+    serializer_class = SubscriptionSerializer
+    queryset = Subscription.objects.all()
+
+    def perform_create(self, serializer):
+        new_subs = serializer.save()
+        new_subs.subscriber = self.request.user
+        new_subs.save()
+
+    def get_permissions(self):
+        if self.action == 'list' or self.action == 'create':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [IsSubscriber]
+        return [permission() for permission in permission_classes]
 
 
 class PaymentCreateAPIView(generics.CreateAPIView):

@@ -9,6 +9,8 @@ class VideoUrlValidator:
         self.field = field
 
     def __call__(self, value):
+        if value is None or value.get(self.field, '').strip() == '':
+            return
         youtube_url = re.compile("(https?://)?(www\.)?(youtube\.com|youtu\.be)/watch\?v=([A-Za-z0-9_-]+)")
         tmp_value = dict(value).get(self.field)
         if not bool(youtube_url.match(tmp_value)):

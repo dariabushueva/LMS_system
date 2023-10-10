@@ -1,4 +1,3 @@
-
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 
@@ -18,11 +17,15 @@ class LessonTestCase(APITestCase):
             author=self.user
         )
 
+        self.lesson = Lesson.objects.create(
+            title='Test_lesson',
+            course=self.course,
+        )
+
     def test_create_lesson(self):
 
         data = {
-            'title': 'TestCreate',
-            'description': 'create_lesson',
+            'title': self.lesson.title,
             'course': self.course.id,
         }
         response = self.client.post(
@@ -35,20 +38,14 @@ class LessonTestCase(APITestCase):
         )
         self.assertEqual(
             response.json(),
-            {'id': 1, 'title': 'TestCreate', 'description': 'create_lesson', 'image_preview': None, 'video_url': None,
-             'course': 1, 'author': 1}
+            {'id': (self.lesson.id + 1), 'title': self.lesson.title, 'description': None, 'image_preview': None, 'video_url': None,
+             'course': self.course.id, 'author': self.user.id}
         )
         self.assertTrue(
             Lesson.objects.all().exists()
         )
 
     def test_list_lesson(self):
-
-        Lesson.objects.create(
-            title='TestList',
-            description='list_lessons',
-            course=self.course,
-        )
 
         response = self.client.get(
             '/lesson/'
@@ -59,20 +56,14 @@ class LessonTestCase(APITestCase):
         )
         self.assertEqual(
             response.json()['results'],
-            [{'id': 1, 'title': 'TestList', 'description': 'list_lessons', 'image_preview': None, 'video_url': None,
-              'course': 1, 'author': None}]
+            [{'id': self.lesson.id, 'title': self.lesson.title, 'description': None, 'image_preview': None, 'video_url': None,
+              'course': self.course.id, 'author': None}]
         )
 
     def test_retrieve_lesson(self):
 
-        Lesson.objects.create(
-            title='TestRetrieve',
-            description='retrieve_lessons',
-            course=self.course,
-        )
-
         response = self.client.get(
-            '/lesson/1/'
+            f'/lesson/{self.lesson.id}/'
         )
         self.assertEqual(
             response.status_code,
@@ -80,22 +71,17 @@ class LessonTestCase(APITestCase):
         )
         self.assertEqual(
             response.json(),
-            {'id': 1, 'title': 'TestRetrieve', 'description': 'retrieve_lessons', 'image_preview': None,
-             'video_url': None, 'course': 1, 'author': None}
+            {'id': self.lesson.id, 'title': 'Test_lesson', 'description': None, 'image_preview': None, 'video_url': None,
+             'course': self.course.id, 'author': None}
         )
 
     def test_update_lesson(self):
-        Lesson.objects.create(
-            title='TestUpdate',
-            description='update_lessons',
-            course=self.course,
-        )
+
         data = {
-            'title': 'TestUpdated',
-            'description': 'updated_lessons',
+            'title': 'Test_updated_lesson',
         }
         response = self.client.patch(
-            '/lesson/update/1/',
+            f'/lesson/update/{self.lesson.id}/',
             data=data
         )
         self.assertEqual(
@@ -104,18 +90,14 @@ class LessonTestCase(APITestCase):
         )
         self.assertEqual(
             response.json(),
-            {'id': 1, 'title': 'TestUpdated', 'description': 'updated_lessons', 'image_preview': None,
-             'video_url': None, 'course': 1, 'author': None}
+            {'id': self.lesson.id, 'title': 'Test_updated_lesson', 'description': None, 'image_preview': None,
+             'video_url': None, 'course': self.course.id, 'author': None}
         )
 
     def test_destroy_lesson(self):
-        Lesson.objects.create(
-            title='TestDestroy',
-            description='update_destroy',
-            course=self.course,
-        )
+
         response = self.client.delete(
-            '/lesson/destroy/1/',
+            f'/lesson/destroy/{self.lesson.id}/',
         )
         self.assertEqual(
             response.status_code,
@@ -139,6 +121,9 @@ class SubscriptionTestCase(APITestCase):
             title='test_course',
             author=self.user
         )
+        self.subs = Subscription.objects.create(
+            course=self.course,
+        )
 
     def test_create_subscription(self):
         data = {
@@ -154,18 +139,16 @@ class SubscriptionTestCase(APITestCase):
         )
         self.assertEqual(
             response.json(),
-            {'id': 1, 'subscriber': 1, 'course': 1}
+            {'id': (self.subs.id + 1), 'subscriber': self.user.id, 'course': self.course.id}
         )
         self.assertTrue(
             Subscription.objects.all().exists()
         )
 
     def test_destroy_subscription(self):
-        Subscription.objects.create(
-            course=self.course,
-        )
+
         response = self.client.delete(
-            '/subscription/1/',
+            f'/subscription/{self.subs.id}/',
         )
         self.assertEqual(
             response.status_code,
@@ -176,6 +159,4 @@ class SubscriptionTestCase(APITestCase):
         Course.objects.all().delete()
         Lesson.objects.all().delete()
         Subscription.objects.all().delete()
-
-
 

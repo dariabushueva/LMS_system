@@ -10,6 +10,8 @@ from lms.serializers import CourseSerializer, LessonSerializer, PaymentSerialize
 
 
 class CourseViewSet(viewsets.ModelViewSet):
+    """ ViewSet for Course """
+
     serializer_class = CourseSerializer
     queryset = Course.objects.all()
     pagination_class = LMSPagination
@@ -31,6 +33,8 @@ class CourseViewSet(viewsets.ModelViewSet):
 
 
 class LessonCreateAPIView(generics.CreateAPIView):
+    """ Lesson create endpoint """
+
     serializer_class = LessonSerializer
     permission_classes = [IsAuthenticated]
 
@@ -41,6 +45,8 @@ class LessonCreateAPIView(generics.CreateAPIView):
 
 
 class LessonListAPIView(generics.ListAPIView):
+    """ Lesson list endpoint """
+
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthenticated]
@@ -48,23 +54,31 @@ class LessonListAPIView(generics.ListAPIView):
 
 
 class LessonRetrieveAPIView(generics.RetrieveAPIView):
+    """ Lesson detail endpoint """
+
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsModeratorOrIsAuthor]
 
 
 class LessonUpdateAPIView(generics.UpdateAPIView):
+    """ Lesson update endpoint """
+
     serializer_class = LessonSerializer
     queryset = Lesson.objects.all()
     permission_classes = [IsModeratorOrIsAuthor]
 
 
 class LessonDestroyAPIView(generics.DestroyAPIView):
+    """ Lesson delete endpoint """
+
     queryset = Lesson.objects.all()
     permission_classes = [IsAuthor]
 
 
 class SubscriptionViewSet(viewsets.ModelViewSet):
+    """ ViewSet for subscription """
+
     serializer_class = SubscriptionSerializer
     queryset = Subscription.objects.all()
 
@@ -82,11 +96,15 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
 
 
 class PaymentCreateAPIView(generics.CreateAPIView):
+    """ Payment create endpoint """
+
     serializer_class = PaymentSerializer
     permission_classes = [IsAuthenticated]
 
 
 class PaymentListAPIView(generics.ListAPIView):
+    """ Payment list endpoint """
+
     serializer_class = PaymentSerializer
     queryset = Payment.objects.all()
     filter_backends = [DjangoFilterBackend, OrderingFilter]

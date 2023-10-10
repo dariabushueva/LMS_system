@@ -1,4 +1,4 @@
-from django.db import connection
+
 from rest_framework import status
 from rest_framework.test import APITestCase, APIClient
 
@@ -176,6 +176,6 @@ class SubscriptionTestCase(APITestCase):
         Course.objects.all().delete()
         Lesson.objects.all().delete()
         Subscription.objects.all().delete()
-        self.reset_sequences()
+
 
 

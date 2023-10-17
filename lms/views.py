@@ -9,6 +9,9 @@ from lms.models import Course, Lesson, Payment, Subscription
 from lms.pagination import LMSPagination
 from lms.permissions import IsModeratorOrIsAuthor, IsAuthor, IsSubscriber
 from lms.serializers import CourseSerializer, LessonSerializer, PaymentSerializer, SubscriptionSerializer
+from lms.tasks import send_updated_email
+
+
 # from lms.services import create_checkout_session
 
 
@@ -45,6 +48,8 @@ class LessonCreateAPIView(generics.CreateAPIView):
         new_course = serializer.save()
         new_course.author = self.request.user
         new_course.save()
+
+        send_updated_email.delay(new_course.course_id)
 
 
 class LessonListAPIView(generics.ListAPIView):

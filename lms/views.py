@@ -1,12 +1,15 @@
+# import stripe
 from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, generics
+from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated
+# from rest_framework.response import Response
 
 from lms.models import Course, Lesson, Payment, Subscription
 from lms.pagination import LMSPagination
 from lms.permissions import IsModeratorOrIsAuthor, IsAuthor, IsSubscriber
 from lms.serializers import CourseSerializer, LessonSerializer, PaymentSerializer, SubscriptionSerializer
+# from lms.services import create_checkout_session
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -100,6 +103,24 @@ class PaymentCreateAPIView(generics.CreateAPIView):
 
     serializer_class = PaymentSerializer
     permission_classes = [IsAuthenticated]
+
+ #   def create(self, request, *args, **kwargs):
+ #       serializer = self.get_serializer(data=request.data)
+ #       serializer.is_valid(raise_exception=True)
+#
+ #       product = stripe.Product.create(name=serializer.course.title)
+ #       price = stripe.Price.create(unit_amount=serializer.course.price, currency='usd', product=product)
+#
+ #       session = create_checkout_session(product, price)
+#
+ #       Payment.objects.create(
+ #           user=self.request.user,
+ #           amount=session['price'],
+ #           course=session['course']
+ #       )
+ #       serializer.save()
+#
+ #       return Response(session['id'], status=status.HTTP_201_CREATED)
 
 
 class PaymentListAPIView(generics.ListAPIView):

@@ -27,7 +27,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('id', 'title', 'description', 'author', 'image_preview', 'lessons', 'lessons_count',
+        fields = ('id', 'title', 'description', 'author', 'price', 'image_preview', 'lessons', 'lessons_count',
                   'subscribers_count', 'is_subscribed',)
 
     def get_subscribers_count(self, instance):

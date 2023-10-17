@@ -151,3 +151,5 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.AllowAny',
     ]
 }
+
+STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')

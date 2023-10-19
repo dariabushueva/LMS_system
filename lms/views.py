@@ -1,18 +1,16 @@
-# import stripe
+from django.shortcuts import redirect
 from rest_framework.filters import OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, generics, status
 from rest_framework.permissions import IsAuthenticated
-# from rest_framework.response import Response
+from rest_framework.response import Response
 
 from lms.models import Course, Lesson, Payment, Subscription
 from lms.pagination import LMSPagination
 from lms.permissions import IsModeratorOrIsAuthor, IsAuthor, IsSubscriber
 from lms.serializers import CourseSerializer, LessonSerializer, PaymentSerializer, SubscriptionSerializer
+from lms.services import create_stripe_checkout_session, get_stripe_payment
 from lms.tasks import send_updated_email
-
-
-# from lms.services import create_checkout_session
 
 
 class CourseViewSet(viewsets.ModelViewSet):
@@ -109,23 +107,32 @@ class PaymentCreateAPIView(generics.CreateAPIView):
     serializer_class = PaymentSerializer
     permission_classes = [IsAuthenticated]
 
- #   def create(self, request, *args, **kwargs):
- #       serializer = self.get_serializer(data=request.data)
- #       serializer.is_valid(raise_exception=True)
-#
- #       product = stripe.Product.create(name=serializer.course.title)
- #       price = stripe.Price.create(unit_amount=serializer.course.price, currency='usd', product=product)
-#
- #       session = create_checkout_session(product, price)
-#
- #       Payment.objects.create(
- #           user=self.request.user,
- #           amount=session['price'],
- #           course=session['course']
- #       )
- #       serializer.save()
-#
- #       return Response(session['id'], status=status.HTTP_201_CREATED)
+    def create(self, request, *args, **kwargs):
+
+        course_id = request.data.get('course')
+        course = Course.objects.get(pk=course_id)
+        session = create_stripe_checkout_session(course_id)
+
+        Payment.objects.create(
+            user=self.request.user,
+            amount=session["amount_total"],
+            course=course,
+            stripe_id=session['id'],
+            stripe_status=session['status']
+        )
+        return redirect(session.url)
+
+
+class PaymentRetrieveAPIView(generics.RetrieveAPIView):
+    """ Payment retrieve endpoint """
+
+    serializer_class = PaymentSerializer
+    queryset = Payment.objects.all()
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        payment_detail = get_stripe_payment(pk=kwargs.get('pk'))
+        return Response(status=status.HTTP_200_OK, data=payment_detail)
 
 
 class PaymentListAPIView(generics.ListAPIView):

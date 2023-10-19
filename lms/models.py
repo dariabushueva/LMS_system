@@ -78,6 +78,9 @@ class Payment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, verbose_name='Курс', **NULLABLE)
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE, verbose_name='Урок', **NULLABLE)
 
+    stripe_id = models.CharField(max_length=100, verbose_name='Stripe ID', **NULLABLE)
+    stripe_status = models.CharField(max_length=50, verbose_name='Stripe статус', **NULLABLE)
+
     def __str__(self):
         return f'{self.user} ({self.course} / {self.lesson})'
 

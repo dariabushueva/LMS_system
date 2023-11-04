@@ -86,9 +86,10 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('PSQL_DB_NAME'),
-        'USER': config('PSQL_USER'),
-        'PASSWORD': config('PSQL_PASSWORD'),
+        'NAME': 'lms_system_docker',
+        'USER': 'postgres',
+        'PASSWORD': 'mysecretpassword',
+        'HOST': 'db'
     }
 }
 
@@ -157,18 +158,11 @@ STRIPE_SECRET_KEY = config('STRIPE_SECRET_KEY')
 STRIPE_PUBLIC_KEY = config('STRIPE_PUBLIC_KEY')
 
 
-CELERY_BROKER_URL = 'redis://localhost:6379'  # URL-адрес брокера сообщений, например Redis
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'  # URL-адрес брокера результатов, также Redis
+CELERY_BROKER_URL = 'redis://redis:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
 
-# Настройки для Celery
-#CELERY_BEAT_SCHEDULE = {
-#    'task-name': {
-#        'task': 'lms.tasks.check_user',
-#        'schedule': timedelta(minutes=1),
-#    },
-#}
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = config('EMAIL_HOST')

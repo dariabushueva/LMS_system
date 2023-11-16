@@ -60,9 +60,10 @@ https://dashboard.stripe.com/register
 В папке config/ создать файл .env, в который записать свои данные:
 ```commandline
 SECRET_KEY=
-PSQL_DB_NAME=lms_system
-PSQL_USER=
-PSQL_PASSWORD=
+POSTGRES_DB=lms_system_docker
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_HOST=db
 STRIPE_SECRET_KEY=
 STRIPE_PUBLIC_KEY=
 EMAIL_PORT=
